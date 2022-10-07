@@ -8,13 +8,22 @@ is_kaggle = "kaggle_secrets" in sys.modules
 torch_to_cuda = {"1.10.0": "cu113", "1.9.0": "cu111", "1.9.1": "cu111"}
 
 
-def install_requirements(is_chapter7: bool = False, is_chapter10: bool = False, is_chapter11: bool = False):
+def install_requirements(
+    is_chapter2: bool = False, 
+    is_chapter6: bool = False,
+    is_chapter7: bool = False,
+    is_chapter7_v2: bool = False,
+    is_chapter10: bool = False,
+    is_chapter11: bool = False
+    ):
     """Installs the required packages for the project."""
 
     print("⏳ Installing base requirements ...")
     cmd = ["python", "-m", "pip", "install", "-r"]
     if is_chapter7:
         cmd += "requirements-chapter7.txt -f https://download.pytorch.org/whl/torch_stable.html".split()
+    elif is_chapter7_v2:
+        cmd.append("requirements-chapter7-v2.txt")
     else:
         cmd.append("requirements.txt")
     process_install = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -28,6 +37,23 @@ def install_requirements(is_chapter7: bool = False, is_chapter10: bool = False, 
         raise Exception("😭 Failed to install Git LFS and soundfile")
     else:
         print("✅ Git LFS installed!")
+
+    if is_chapter2:
+        transformers_cmd = "python -m pip install transformers==4.13.0".split()
+        process_scatter = subprocess.run(
+            transformers_cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
+    if is_chapter6:
+        transformers_cmd = "python -m pip install datasets==2.0.0".split()
+        process_scatter = subprocess.run(
+            transformers_cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
     if is_chapter10:
         wandb_cmd = "python -m pip install wandb".split()
         process_scatter = subprocess.run(
